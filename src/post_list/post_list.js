@@ -114,7 +114,7 @@ class Posts extends Component {
   }
 
   componentDidMount() {
-    getPosts() // call api 也許可以改在 RenderPosts 那裡
+    getPosts()
       .then(res => {
         this.setState({
           data: res.data
@@ -125,7 +125,7 @@ class Posts extends Component {
       });
   }
 
-  render() { /** 之後可以改成兩種呈現方式，條列式格狀顯示 */
+  render() {
     const { data, isCreate } = this.state;
     const { history } = this.props;
     return (

@@ -18,49 +18,46 @@ const EditingWindow = ({ onHide, show, post, status, handleChangePosts }) => {
       setEmpty({ ...isEmpty, [e.target.name]: true, })
     } else {
       setEmpty({ ...isEmpty, [e.target.name]: false, })
-    }
+    };
 
     setThisPost({ ...thisPost, [e.target.name]: e.target.value, })
-  }
+  };
 
   const handleSubmit = () => {
     if (!thisPost.title || !thisPost.author || !thisPost.body) {
       setSubmitType({ canSubmit: false, status: '資料不全，無法送出，繼續完成資料才可送出', });
       return;
-    }
+    };
 
     const whichAPI = (thisPost, status) => status === 'create' ?
-      webAPI.createPost(thisPost) : webAPI.updatePost(thisPost)
+      webAPI.createPost(thisPost) : webAPI.updatePost(thisPost);
 
-    const submitPost = (status, thisPost) => { // 像這個想詢問一下，可以往上獲取資料，我還需要特別傳入嗎？
+    const submitPost = (status, thisPost) => {
       handleChangePosts(status, thisPost); // 改變畫面上的資料
-      onHide(); /** 進一步可優化顯示傳送中，成功後顯示成功 */
-    }
+      onHide();
+    };
 
     const onError = (err) => {
       setSubmitType({ canSubmit: false, status: `發生問題無法送出 ${err}`, });
-    }
+    };
 
     whichAPI(thisPost, status)
       .then(res => res.status <= 300 && submitPost(status, thisPost))
-      .catch(err => onError(err)) // .then .catch 是否會自己判斷 status?
-  }
+      .catch(err => onError(err));
+  };
 
   useEffect(() => {
     if (thisPost.title && thisPost.author && thisPost.body) {
       setSubmitType({ canSubmit: true, status: '', });
     } // render 檢測值是否為空
-  }, [thisPost])
+  }, [thisPost]);
 
   return (
     <Modal
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
-      {...{ onHide, show }
-      /* 不太懂為什麼一定要加 ... 直接寫也會出 bug 只知道等同於下面
-      onHide={onHide} show={show}，這樣的寫法是另外變成物件，然後傳給子 component 之後解構嗎
-      */}
+      {...{ onHide, show } /* 等同於下面 onHide={onHide} show={show} */}
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
@@ -136,7 +133,6 @@ const EditingWindow = ({ onHide, show, post, status, handleChangePosts }) => {
         </Modal.Footer>
       </Form>
     </Modal>
-    /* 編輯送出之後，還要讓整個資料可以改變 */
   );
 }
 
@@ -156,7 +152,7 @@ const DeleteWindow = ({ onHide, show, post, status, handleChangePosts }) => {
         .then(res => res.status < 300 && finalExecution(true) /* 改變父狀態 */)
         .catch(() => finalExecution(false))
     }
-  }, [loadingState, handleChangePosts, post, status]); /* 待研究為什麼需要加入後三者才不報錯 */
+  }, [loadingState, handleChangePosts, post, status]);
 
   const handleDelete = () => {
     setLoadingState('刪除中........')
